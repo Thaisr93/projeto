@@ -3,20 +3,16 @@ import FormProduto from "./components/FormProduto";
 import ListaProdutos from "./components/ListaProdutos";
 
 export default function App() {
-  const API = "https://produto-backend.onrender.com/produtos";
-
   const [produtos, setProdutos] = useState<any[]>([]);
   const [produtoAtual, setProdutoAtual] = useState<any>(null);
 
-  // Buscar produtos do backend
+  const API = "https://produto-backend.onrender.com/produtos";
+
+  // Buscar produtos
   const fetchProdutos = async () => {
-    try {
-      const res = await fetch(API);
-      const data = await res.json();
-      setProdutos(data);
-    } catch (err) {
-      console.error("Erro ao buscar produtos:", err);
-    }
+    const res = await fetch(API);
+    const data = await res.json();
+    setProdutos(data);
   };
 
   useEffect(() => {
@@ -25,44 +21,35 @@ export default function App() {
 
   // Criar ou atualizar produto
   const handleSubmit = async (produto: any) => {
-    try {
-      if (produtoAtual) {
-        // Atualizar
-        await fetch(`${API}/${produtoAtual.id}`, {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(produto),
-        });
-        setProdutoAtual(null);
-      } else {
-        // Criar
-        await fetch(API, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(produto),
-        });
-      }
-
-      fetchProdutos();
-    } catch (err) {
-      console.error("Erro ao salvar produto:", err);
+    if (produtoAtual) {
+      // Atualizar
+      await fetch(`${API}/${produtoAtual.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(produto),
+      });
+      setProdutoAtual(null);
+    } else {
+      // Criar
+      await fetch(API, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(produto),
+      });
     }
+
+    fetchProdutos();
   };
 
   // Deletar produto
   const handleDelete = async (id: number) => {
-    try {
-      await fetch(`${API}/${id}`, {
-        method: "DELETE",
-      });
+    await fetch(`${API}/${id}`, {
+      method: "DELETE",
+    });
 
-      fetchProdutos();
-    } catch (err) {
-      console.error("Erro ao deletar produto:", err);
-    }
+    fetchProdutos();
   };
 
-  // Editar produto
   const handleEdit = (produto: any) => setProdutoAtual(produto);
 
   return (
