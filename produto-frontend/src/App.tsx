@@ -3,60 +3,66 @@ import FormProduto from "./components/FormProduto";
 import ListaProdutos from "./components/ListaProdutos";
 
 export default function App() {
-  // Estado que guarda todos os produtos
-  const [produtos, setProdutos] = useState<any[]>([]);
+  const API = "https://produto-backend.onrender.com/produtos";
 
-  // Estado que guarda o produto que está sendo editado
+  const [produtos, setProdutos] = useState<any[]>([]);
   const [produtoAtual, setProdutoAtual] = useState<any>(null);
 
-  // Função para buscar todos os produtos do backend
+  // Buscar produtos do backend
   const fetchProdutos = async () => {
-    const res = await fetch("https://produto-backend.onrender.com/produtos");
-    const data = await res.json();
-    setProdutos(data);
+    try {
+      const res = await fetch(API);
+      const data = await res.json();
+      setProdutos(data);
+    } catch (err) {
+      console.error("Erro ao buscar produtos:", err);
+    }
   };
 
-  // Chama fetchProdutos quando o componente monta
   useEffect(() => {
     fetchProdutos();
   }, []);
 
-  // Função para criar ou atualizar um produto
-  const API = "https://produto-backend.onrender.com/produtos";
-
+  // Criar ou atualizar produto
   const handleSubmit = async (produto: any) => {
-    if (produtoAtual) {
-      // Atualiza
-      await fetch(
-        `"https://produto-backend.onrender.com/produtos"${produtoAtual.id}`,
-        {
-          method: "fetch(${API}/${id}",
+    try {
+      if (produtoAtual) {
+        // Atualizar
+        await fetch(`${API}/${produtoAtual.id}`, {
+          method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(produto),
-        }
-      );
-      setProdutoAtual(null);
-    } else {
-      // Cria
-      await fetch("https://produto-backend.onrender.com/produtos", {
-        method: "fetch(API)",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(produto),
-      });
+        });
+        setProdutoAtual(null);
+      } else {
+        // Criar
+        await fetch(API, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(produto),
+        });
+      }
+
+      fetchProdutos();
+    } catch (err) {
+      console.error("Erro ao salvar produto:", err);
     }
-    fetchProdutos();
-    const res = await fetch(API);
   };
 
-  // Função para deletar produto
+  // Deletar produto
   const handleDelete = async (id: number) => {
-    await fetch(`"https://produto-backend.onrender.com/produtos"${id}`, {
-      method: "fetch(${API}/${id}",
-    });
-    fetchProdutos();
+    try {
+      await fetch(`${API}/${id}`, {
+        method: "DELETE",
+      });
+
+      fetchProdutos();
+    } catch (err) {
+      console.error("Erro ao deletar produto:", err);
+    }
   };
 
-  // Função para editar produto
+  // Editar produto
   const handleEdit = (produto: any) => setProdutoAtual(produto);
 
   return (
