@@ -11,7 +11,7 @@ export default function App() {
 
   // Função para buscar todos os produtos do backend
   const fetchProdutos = async () => {
-    const res = await fetch("https://v5trt7-5000.csb.app/produtos");
+    const res = await fetch("https://produto-backend.onrender.com/produtos");
     const data = await res.json();
     setProdutos(data);
   };
@@ -22,21 +22,24 @@ export default function App() {
   }, []);
 
   // Função para criar ou atualizar um produto
-  const API = "https://v5trt7-5000.csb.app/produtos";
+  const API = "https://produto-backend.onrender.com/produtos";
 
   const handleSubmit = async (produto: any) => {
     if (produtoAtual) {
       // Atualiza
-      await fetch(`"https://v5trt7-5000.csb.app/produtos"${produtoAtual.id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(produto),
-      });
+      await fetch(
+        `"https://produto-backend.onrender.com/produtos"${produtoAtual.id}`,
+        {
+          method: "fetch(${API}/${id}",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(produto),
+        }
+      );
       setProdutoAtual(null);
     } else {
       // Cria
-      await fetch("https://v5trt7-5000.csb.app/produtos", {
-        method: "POST",
+      await fetch("https://produto-backend.onrender.com/produtos", {
+        method: "fetch(API)",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(produto),
       });
@@ -47,8 +50,8 @@ export default function App() {
 
   // Função para deletar produto
   const handleDelete = async (id: number) => {
-    await fetch(`"https://v5trt7-5000.csb.app/produtos"${id}`, {
-      method: "DELETE",
+    await fetch(`"https://produto-backend.onrender.com/produtos"${id}`, {
+      method: "fetch(${API}/${id}",
     });
     fetchProdutos();
   };
