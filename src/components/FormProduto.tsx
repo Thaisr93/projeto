@@ -1,17 +1,16 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 
-type Produto = {
-  id?: number;
+interface Produto {
   nome: string;
   preco: number;
   descricao: string;
   quantidade: number;
-};
+}
 
-type FormProdutoProps = {
+interface FormProdutoProps {
   onSubmit: (produto: Produto) => void;
   produtoAtual: Produto | null;
-};
+}
 
 export default function FormProduto({
   onSubmit,
@@ -47,29 +46,36 @@ export default function FormProduto({
 
   return (
     <form onSubmit={handleSubmit}>
+      <h2>{produtoAtual ? "Editar Produto" : "Novo Produto"}</h2>
       <input
+        type="text"
+        placeholder="Nome"
         value={nome}
         onChange={(e) => setNome(e.target.value)}
-        placeholder="Nome"
+        required
       />
       <input
         type="number"
+        placeholder="Preço"
         value={preco}
         onChange={(e) => setPreco(Number(e.target.value))}
-        placeholder="Preço"
+        required
       />
       <input
+        type="text"
+        placeholder="Descrição"
         value={descricao}
         onChange={(e) => setDescricao(e.target.value)}
-        placeholder="Descrição"
+        required
       />
       <input
         type="number"
+        placeholder="Quantidade"
         value={quantidade}
         onChange={(e) => setQuantidade(Number(e.target.value))}
-        placeholder="Quantidade"
+        required
       />
-      <button type="submit">Salvar</button>
+      <button type="submit">{produtoAtual ? "Atualizar" : "Cadastrar"}</button>
     </form>
   );
 }

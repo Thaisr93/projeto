@@ -1,14 +1,18 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import FormProduto from "./components/FormProduto";
-import ListaProdutos from "./components/ListaProdutos";
+import ListaProdutos from "./components/ListaProduto";
 
 export default function App() {
+  // Estado que guarda todos os produtos
   const [produtos, setProdutos] = useState<any[]>([]);
+
+  // Estado que guarda o produto que está sendo editado
   const [produtoAtual, setProdutoAtual] = useState<any>(null);
 
+  // URL do backend hospedado
   const API = "https://produto-backend.onrender.com/produtos";
 
-  // Buscar produtos do backend
+  // Função para buscar todos os produtos do backend
   const fetchProdutos = async () => {
     try {
       const res = await fetch(API);
@@ -19,15 +23,16 @@ export default function App() {
     }
   };
 
+  // Chama fetchProdutos quando o componente monta
   useEffect(() => {
     fetchProdutos();
   }, []);
 
-  // Criar ou atualizar produto
+  // Função para criar ou atualizar um produto
   const handleSubmit = async (produto: any) => {
     try {
       if (produtoAtual) {
-        // Atualizar
+        // Atualiza
         await fetch(`${API}/${produtoAtual.id}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -35,7 +40,7 @@ export default function App() {
         });
         setProdutoAtual(null);
       } else {
-        // Criar
+        // Cria
         await fetch(API, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -44,20 +49,23 @@ export default function App() {
       }
       fetchProdutos();
     } catch (error) {
-      console.error("Erro ao salvar produto:", error);
+      console.error("Erro ao enviar produto:", error);
     }
   };
 
-  // Deletar produto
+  // Função para deletar produto
   const handleDelete = async (id: number) => {
     try {
-      await fetch(`${API}/${id}`, { method: "DELETE" });
+      await fetch(`${API}/${id}`, {
+        method: "DELETE",
+      });
       fetchProdutos();
     } catch (error) {
       console.error("Erro ao deletar produto:", error);
     }
   };
 
+  // Função para editar produto
   const handleEdit = (produto: any) => setProdutoAtual(produto);
 
   return (
